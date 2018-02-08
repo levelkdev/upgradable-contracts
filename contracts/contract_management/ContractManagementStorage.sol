@@ -5,5 +5,6 @@ contract ContractManagementStorage {
   // Accessors for mapping with dynamically-sized keys not yet implemented.
   mapping(string => address) internal registeredContracts;
   mapping(address => string) public registeredContractKeys;
-  mapping(string => address) internal registeredProxies;
+  mapping(string => address) internal registeredStorageDelegates;
+  mapping(string => address) internal registeredDelegates;
 }

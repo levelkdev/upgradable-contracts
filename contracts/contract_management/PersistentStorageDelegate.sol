@@ -31,8 +31,16 @@ contract PersistentStorageDelegate is ContractManagementStorage, KeyValueStorage
     delete registeredContracts[key];
   }
 
-  function setProxy(string key, address proxy) public onlyContractManager {
-    registeredProxies[key] = proxy;
+  function setStorageDelegate(string key, address delegate) public onlyContractManager {
+    registeredStorageDelegates[key] = delegate;
+  }
+
+  function setDelegate(string key, address delegate) public onlyContractManager {
+    registeredDelegates[key] = delegate;
+  }
+
+  function getDelegate() public view returns (address) {
+    return registeredDelegates[registeredContractKeys[msg.sender]];
   }
 
   function setContractManager(address _contractManager) public onlyContractManager {
@@ -142,6 +150,6 @@ contract PersistentStorageDelegate is ContractManagementStorage, KeyValueStorage
 
   // Overrides delegateAddress() in Proxy.sol
   function delegateAddress() internal view returns (address) {
-    return registeredProxies[registeredContractKeys[msg.sender]];
+    return registeredStorageDelegates[registeredContractKeys[msg.sender]];
   }
 }

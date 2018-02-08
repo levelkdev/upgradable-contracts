@@ -1,8 +1,9 @@
 pragma solidity ^0.4.18;
 
 import './NumStorage.sol';
+import '../contract_management/Proxy.sol';
 
-contract NumTracker {
+contract NumTracker is Proxy {
 
   NumStorage _storage;
 
@@ -10,11 +11,8 @@ contract NumTracker {
     _storage = numStorage;
   }
 
-  function setNum(uint num) public {
-    _storage.setNum(num);
-  }
-
-  function num() public view returns (uint) {
-    return _storage.num();
+  // Overrides delegateAddress() in Proxy.sol
+  function delegateAddress() internal view returns (address) {
+    return _storage.getDelegate();
   }
 }

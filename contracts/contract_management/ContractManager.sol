@@ -20,8 +20,12 @@ contract ContractManager is Ownable {
     _storage.removeContract(key);
   }
 
-  function setProxy(string key, address proxy) public onlyOwner {
-    _storage.setProxy(key, proxy);
+  function setStorageDelegate(string key, address delegate) public onlyOwner {
+    _storage.setStorageDelegate(key, delegate);
+  }
+
+  function setDelegate(string key, address delegate) public onlyOwner {
+    _storage.setDelegate(key, delegate);
   }
 
   function setContractManager(address _contractManager) public onlyOwner {
