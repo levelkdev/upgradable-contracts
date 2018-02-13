@@ -2,13 +2,13 @@ pragma solidity 0.4.18;
 
 import '../contract_management/PersistentStorage.sol';
 
-contract NumStorage is PersistentStorageDelegate {
+contract NumStorage is PersistentStorage {
 
   function setNum(uint num) public {
-    setUint("num", num);
+    setUint(keccak256("num"), num);
   }
 
   function num() public view returns (uint) {
-    return getUint("num");
+    return getUint(keccak256("num"));
   }
 }

@@ -3,9 +3,11 @@
 import { expect } from 'chai'
 
 const ContractManager = artifacts.require('ContractManager')
-const PersistentStorageDelegate = artifacts.require('PersistentStorageDelegate')
-const PersistentStorage = artifacts.require('PersistentStorage')
-const NumTracker = artifacts.require('NumTracker')
+const ContractManagementStorageDelegate = artifacts.require('ContractManagementStorageDelegate')
+const DelegatedStorage = artifacts.require('DelegatedStorage')
+
+
+const UpgradableContract = artifacts.require('UpgradableContract')
 const NumTrackerDelegate1 = artifacts.require('NumTrackerDelegate1')
 const NumTrackerDelegate2 = artifacts.require('NumTrackerDelegate2')
 const NumStorage = artifacts.require('NumStorage')
@@ -13,6 +15,45 @@ const NumStorage = artifacts.require('NumStorage')
 const NUM = 123456789
 
 describe.only('Upgrade', () => {
+  it.only('should also allow for upgrades', async () => {
+    let num
+    // Deploy delegates
+    // If delegates have been deployed, they can be reused
+    const contractManagementStorageDelegate = await ContractManagementStorageDelegate.new()
+    const numTrackerDelegate1 = await NumTrackerDelegate1.new()
+    const numTrackerDelegate2 = await NumTrackerDelegate2.new()
+
+    // Set up storage and contractManager
+    const contractManager = await ContractManager.new(contractManagementStorageDelegate.address)
+    const storage = await DelegatedStorage.at(await contractManager._storage())
+
+    const numStorage = await NumStorage.new()
+    const upgradableContract = await UpgradableContract.new(storage.address, contractManager.address)
+    let numTracker = await NumTrackerDelegate1.at(upgradableContract.address);
+
+
+    await contractManager.setContract('NumTracker', numTracker.address)
+    await contractManager.setStorageDelegate('NumTracker', numStorage.address)
+    await contractManager.setDelegate('NumTracker', numTrackerDelegate1.address)
+
+    // Set num to NUM
+    await numTracker.setNum(NUM)
+    num = await numTracker.num()
+    expect(num.toNumber()).to.equal(NUM)
+
+    // upgrade NumTracker to NumTracker2
+    await contractManager.setDelegate('NumTracker', numTrackerDelegate2.address)
+    numTracker = await NumTrackerDelegate2.at(numTracker.address);
+
+    num = await numTracker.num()
+    expect(num.toNumber()).to.equal(NUM)
+
+    // Use NumTracker2 new functionality to add one
+    await numTracker.addOne()
+    num = await numTracker.num()
+    expect(num.toNumber()).to.equal(NUM + 1)
+  })
+
   it('should allow for upgrades', async () => {
     let num
     const storageDelegate = await PersistentStorageDelegate.new()
@@ -46,3 +87,14 @@ describe.only('Upgrade', () => {
     expect(num.toNumber()).to.equal(NUM + 1)
   })
 })
+
+async function logEvents(asyncFn) {
+  const { logs } = await asyncFn
+
+  console.log(``);
+  console.log(`    Found ${logs.length} events`)
+  logs.forEach((log) => {
+    console.log(log)
+  })
+  console.log(``);
+}
