@@ -4,16 +4,16 @@ import './DelegatedStorage.sol';
 import './KeyManagerInterface.sol';
 import './DelegateManagerInterface.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
-import './ContractManagementStorageDelegate.sol';
+import './CoordinatorStorageDelegate.sol';
 
-contract ContractManager is KeyManagerInterface, DelegateManagerInterface, Ownable {
+contract Coordinator is KeyManagerInterface, DelegateManagerInterface, Ownable {
 
-  ContractManagementStorageDelegate public _storage;
-  ContractManagementStorageDelegate public delegate;
+  CoordinatorStorageDelegate public _storage;
+  CoordinatorStorageDelegate public delegate;
 
-  function ContractManager(address contractManagementStorageDelegate) public {
-    _storage = ContractManagementStorageDelegate(new DelegatedStorage(this, this));
-    delegate = ContractManagementStorageDelegate(contractManagementStorageDelegate);
+  function Coordinator(address coordinatorStorageDelegate) public {
+    _storage = CoordinatorStorageDelegate(new DelegatedStorage(this, this));
+    delegate = CoordinatorStorageDelegate(coordinatorStorageDelegate);
   }
 
   function setContract(string _key, address contract_) public onlyOwner {
@@ -36,7 +36,7 @@ contract ContractManager is KeyManagerInterface, DelegateManagerInterface, Ownab
   // KeyManagerInterface
   function keyForContract(address contract_) public view returns (bytes32) {
     if (contract_ == address(this))
-      return keccak256("ContractManager");
+      return keccak256("Coordinator");
     return _storage.getRegisteredContractKey(contract_);
   }
 

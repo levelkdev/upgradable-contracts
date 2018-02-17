@@ -2,8 +2,8 @@
 
 import { expect } from 'chai'
 
-const ContractManager = artifacts.require('ContractManager')
-const ContractManagementStorageDelegate = artifacts.require('ContractManagementStorageDelegate')
+const Coordinator = artifacts.require('Coordinator')
+const CoordinatorStorageDelegate = artifacts.require('CoordinatorStorageDelegate')
 const DelegatedStorage = artifacts.require('DelegatedStorage')
 
 
@@ -19,22 +19,22 @@ describe.only('Upgrade', () => {
     let num
     // Deploy delegates
     // If delegates have been deployed, they can be reused
-    const contractManagementStorageDelegate = await ContractManagementStorageDelegate.new()
+    const coordinatorStorageDelegate = await CoordinatorStorageDelegate.new()
     const numTrackerDelegate1 = await NumTrackerDelegate1.new()
     const numTrackerDelegate2 = await NumTrackerDelegate2.new()
 
-    // Set up storage and contractManager
-    const contractManager = await ContractManager.new(contractManagementStorageDelegate.address)
-    const storage = await DelegatedStorage.at(await contractManager._storage())
+    // Set up storage and coordinator
+    const coordinator = await Coordinator.new(coordinatorStorageDelegate.address)
+    const storage = await DelegatedStorage.at(await coordinator._storage())
 
     const numStorage = await NumStorage.new()
-    const upgradableContract = await UpgradableContract.new(storage.address, contractManager.address)
+    const upgradableContract = await UpgradableContract.new(storage.address, coordinator.address)
     let numTracker = await NumTrackerDelegate1.at(upgradableContract.address);
 
 
-    await contractManager.setContract('NumTracker', numTracker.address)
-    await contractManager.setStorageDelegate('NumTracker', numStorage.address)
-    await contractManager.setDelegate('NumTracker', numTrackerDelegate1.address)
+    await coordinator.setContract('NumTracker', numTracker.address)
+    await coordinator.setStorageDelegate('NumTracker', numStorage.address)
+    await coordinator.setDelegate('NumTracker', numTrackerDelegate1.address)
 
     // Set num to NUM
     await numTracker.setNum(NUM)
@@ -42,7 +42,7 @@ describe.only('Upgrade', () => {
     expect(num.toNumber()).to.equal(NUM)
 
     // upgrade NumTracker to NumTracker2
-    await contractManager.setDelegate('NumTracker', numTrackerDelegate2.address)
+    await coordinator.setDelegate('NumTracker', numTrackerDelegate2.address)
     numTracker = await NumTrackerDelegate2.at(numTracker.address);
 
     num = await numTracker.num()
@@ -57,16 +57,16 @@ describe.only('Upgrade', () => {
   it('should allow for upgrades', async () => {
     let num
     const storageDelegate = await PersistentStorageDelegate.new()
-    const contractManager = await ContractManager.new(storageDelegate.address)
-    const storage = await PersistentStorage.at(await contractManager._storage())
+    const coordinator = await Coordinator.new(storageDelegate.address)
+    const storage = await PersistentStorage.at(await coordinator._storage())
     const numTrackerDelegate1 = await NumTrackerDelegate1.new()
     const numStorage = await NumStorage.new()
     const numTrackerProxy = await NumTracker.new(storage.address)
     let numTracker = await NumTrackerDelegate1.at(numTrackerProxy.address);
 
-    await contractManager.setContract('NumTracker', numTracker.address)
-    await contractManager.setStorageDelegate('NumTracker', numStorage.address)
-    await contractManager.setDelegate('NumTracker', numTrackerDelegate1.address)
+    await coordinator.setContract('NumTracker', numTracker.address)
+    await coordinator.setStorageDelegate('NumTracker', numStorage.address)
+    await coordinator.setDelegate('NumTracker', numTrackerDelegate1.address)
 
     // Set num to NUM
     await numTracker.setNum(NUM)
@@ -75,7 +75,7 @@ describe.only('Upgrade', () => {
 
     // upgrade NumTracker to NumTracker2
     const numTrackerDelegate2 = await NumTrackerDelegate2.new()
-    await contractManager.setDelegate('NumTracker', numTrackerDelegate2.address)
+    await coordinator.setDelegate('NumTracker', numTrackerDelegate2.address)
     numTracker = await NumTrackerDelegate2.at(numTrackerProxy.address);
 
     num = await numTracker.num()
