@@ -4,7 +4,7 @@ import './NumStorage.sol';
 
 contract NumTrackerDelegate1 {
 
-  NumStorage _storage;
+  NumStorage public _storage;
 
   function setNum(uint num) public {
     _storage.setNum(num);

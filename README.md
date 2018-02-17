@@ -1,6 +1,6 @@
 # Upgradable Contracts
 
-This a general pattern for an upgradable dApp with a shared key value store. The `ContractManager` manages access to `PersistentStorage`, the shared storage for the dApp. Each contract registered with `PersistentStorage` has a key and is only allowed to write to state within the context of that key. The `ContractManager` itself can be upgraded to a new governance mechanism using `setContractManager()`.
+This a general pattern for an upgradable dApp with a shared key value store. The `Coordinator` manages access to `PersistentStorage`, the shared storage for the dApp. Each contract registered with `PersistentStorage` has a key and is only allowed to write to state within the context of that key. The `Coordinator` itself can be upgraded to a new governance mechanism using `setCoordinator()`.
 
 ### Setup
 
