@@ -1,8 +1,8 @@
 pragma solidity 0.4.18;
 
-import './DelegatedStorage.sol';
-import './KeyManagerInterface.sol';
-import './DelegateManagerInterface.sol';
+import '../delegated_storage/DelegatedStorage.sol';
+import '../delegated_storage/KeyManagerInterface.sol';
+import '../proxy/DelegateManagerInterface.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 import './CoordinatorStorageDelegate.sol';
 

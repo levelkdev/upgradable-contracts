@@ -1,9 +1,9 @@
 pragma solidity 0.4.18;
 
-contract Storable {
+contract BasicStorage {
   address public _storage;
 
-  function Storable(address storageAddress) {
+  function BasicStorage(address storageAddress) {
     _storage = storageAddress;
   }
 }

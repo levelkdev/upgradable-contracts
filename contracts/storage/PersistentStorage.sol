@@ -1,7 +1,5 @@
 pragma solidity 0.4.18;
 
-import './KeyManagerInterface.sol';
-
 contract PersistentStorage {
 
   mapping(bytes32 => uint256) internal uIntStorage;

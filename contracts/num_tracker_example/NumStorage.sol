@@ -1,6 +1,6 @@
 pragma solidity 0.4.18;
 
-import '../contract_management/PersistentStorage.sol';
+import '../storage/PersistentStorage.sol';
 
 contract NumStorage is PersistentStorage {
 

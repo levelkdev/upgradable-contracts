@@ -1,7 +1,7 @@
 pragma solidity 0.4.18;
 
-import './PersistentStorage.sol';
-// TODO: add protections to functions
+import '../storage/PersistentStorage.sol';
+
 contract CoordinatorStorageDelegate is PersistentStorage {
 
   /**** Get Methods ***********/

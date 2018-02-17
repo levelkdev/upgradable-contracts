@@ -1,9 +1,10 @@
 pragma solidity 0.4.18;
 
-import './PersistentStorage.sol';
-import './Proxy.sol';
-import './DelegateManagerInterface.sol';
-import './DelegateManagable.sol';
+import '../storage/PersistentStorage.sol';
+import '../proxy/Proxy.sol';
+import '../proxy/DelegateManagerInterface.sol';
+import '../proxy/DelegateManagable.sol';
+import './KeyManagerInterface.sol';
 
 contract DelegatedStorage is PersistentStorage, DelegateManagable {
 
@@ -17,9 +18,5 @@ contract DelegatedStorage is PersistentStorage, DelegateManagable {
 
   function scopedKey(bytes32 _key) internal view returns(bytes32) {
     return keccak256(keyManager.keyForContract(msg.sender), _key);
-  }
-
-  function getStorageDelegate() public view returns (address) {
-    return delegateManager.delegateForContract(msg.sender);
   }
 }
